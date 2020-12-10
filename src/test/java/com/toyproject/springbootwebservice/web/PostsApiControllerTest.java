@@ -3,6 +3,7 @@ package com.toyproject.springbootwebservice.web;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.toyproject.springbootwebservice.domain.posts.Posts;
@@ -39,8 +40,31 @@ public class PostsApiControllerTest {
     }
 
     @Test
+    public void  BaseTimeEntity_등록() {
+        // given
+        LocalDateTime now = LocalDateTime.of(2019, 6, 4, 0, 0, 0);
+        postsRepository.save(Posts.builder()
+                                    .title("title")
+                                    .content("content")
+                                    .author("author")
+                                    .build());
+        
+        // when
+        List<Posts> postsList = postsRepository.findAll();
+
+        // then
+        Posts posts = postsList.get(0);
+
+        System.out.println(">>>>>>>>>>>> createDate =" + posts.getCreatedDate() + ", modifiedDate = " + posts.getModifiedDate());
+
+        assertTrue(posts.getCreatedDate().isAfter(now));
+        assertTrue(posts.getModifiedDate().isAfter(now));
+
+    }
+
+    @Test
     public void posts_등록된다() throws Exception {
-        //given
+        // given
         String title = "title";
         String content = "content";
         PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
@@ -51,10 +75,10 @@ public class PostsApiControllerTest {
         
         String url = "http://localhost:" + port + "/api/v1/posts";
 
-        //when
+        // when
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
 
-        //then
+        // then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody() > 0L);
 
@@ -65,7 +89,7 @@ public class PostsApiControllerTest {
 
     @Test
     public void Posts_수정된다() throws Exception {
-        //given
+        // given
         Posts savedPosts = postsRepository.save(Posts.builder()
                                                         .title("title")
                                                         .content("content")
@@ -85,10 +109,10 @@ public class PostsApiControllerTest {
 
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
-        //when
+        // when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
 
-        //then
+        // then
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody() > 0L);
 
