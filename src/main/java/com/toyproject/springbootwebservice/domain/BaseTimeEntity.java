@@ -16,7 +16,7 @@ import lombok.Getter;
  */
 
 @Getter
-@MappedSuperclass // JPA Entity 클래스들이 상속할 경우 필드들도 칼럼으로 인식하록 함
+@MappedSuperclass // JPA Entity 클래스들이 상속할 경우 필드들도 칼럼으로 인식 하도록 함
 @EntityListeners(AuditingEntityListener.class) // Auditing 기능을 포함
 public abstract class BaseTimeEntity {
     
