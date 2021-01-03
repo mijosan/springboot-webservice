@@ -10,7 +10,6 @@ import lombok.Getter;
 
 @Getter
 public class OAuthAttributes {
-    
     private Map<String, Object> attributes;
     private String nameAttributeKey;
     private String name;
@@ -27,7 +26,10 @@ public class OAuthAttributes {
     }
 
     public static OAuthAttributes of(String registrationId, String userNameAttributeName, Map<String, Object> attributes) {
-        
+        if("naver".equals(registrationId)) {
+            return ofNaver("id", attributes);
+        }
+
         return ofGoogle(userNameAttributeName, attributes);
     }
 
@@ -53,7 +55,6 @@ public class OAuthAttributes {
                 .build();
     }
 
-
     public User toEntity() {
         return User.builder()
                 .name(name)
@@ -62,5 +63,5 @@ public class OAuthAttributes {
                 .role(Role.GUEST)
                 .build();
     }
-
+    
 }
